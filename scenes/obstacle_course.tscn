@@ -1,0 +1,126 @@
+[gd_scene load_steps=16 format=3]
+
+[sub_resource type="StandardMaterial3D" id="RampMaterial"]
+albedo_color = Color(0.48, 0.29, 0.16, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="PlatformMaterial"]
+albedo_color = Color(0.55, 0.37, 0.22, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="CrateMaterial"]
+albedo_color = Color(0.78, 0.48, 0.16, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="WallMaterial"]
+albedo_color = Color(0.38, 0.42, 0.47, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StartMaterial"]
+albedo_color = Color(0.18, 0.62, 0.29, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="FinishMaterial"]
+albedo_color = Color(0.75, 0.16, 0.18, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="RampMesh"]
+size = Vector3(4.5, 0.18, 8.5)
+
+[sub_resource type="BoxShape3D" id="RampCollision"]
+size = Vector3(4.5, 0.18, 8.5)
+
+[sub_resource type="BoxMesh" id="PlatformMesh"]
+size = Vector3(4.5, 0.3, 4.5)
+
+[sub_resource type="BoxShape3D" id="PlatformCollision"]
+size = Vector3(4.5, 0.3, 4.5)
+
+[sub_resource type="BoxMesh" id="CrateMesh"]
+size = Vector3(1.3, 1.4, 1.2)
+
+[sub_resource type="BoxShape3D" id="CrateCollision"]
+size = Vector3(1.3, 1.4, 1.2)
+
+[sub_resource type="BoxMesh" id="WallMesh"]
+size = Vector3(0.25, 2.0, 5.0)
+
+[sub_resource type="BoxShape3D" id="WallCollision"]
+size = Vector3(0.25, 2.0, 5.0)
+
+[sub_resource type="BoxMesh" id="MarkerMesh"]
+size = Vector3(5.0, 0.05, 2.0)
+
+[node name="ObstacleCourse" type="Node3D"]
+
+[node name="StartMarker" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.025, 15.5)
+mesh = SubResource("MarkerMesh")
+material_override = SubResource("StartMaterial")
+
+[node name="RampUp" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.43, 9)
+rotation_degrees = Vector3(7, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RampUp"]
+mesh = SubResource("RampMesh")
+material_override = SubResource("RampMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RampUp"]
+shape = SubResource("RampCollision")
+
+[node name="UpperPlatform" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.89, 2.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UpperPlatform"]
+mesh = SubResource("PlatformMesh")
+material_override = SubResource("PlatformMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="UpperPlatform"]
+shape = SubResource("PlatformCollision")
+
+[node name="RampDown" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.37, -3.75)
+rotation_degrees = Vector3(-7, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RampDown"]
+mesh = SubResource("RampMesh")
+material_override = SubResource("RampMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RampDown"]
+shape = SubResource("RampCollision")
+
+[node name="CrateObstacle" type="StaticBody3D" parent="."]
+position = Vector3(-1.45, 0.7, -9.2)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CrateObstacle"]
+mesh = SubResource("CrateMesh")
+material_override = SubResource("CrateMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CrateObstacle"]
+shape = SubResource("CrateCollision")
+
+[node name="NarrowPassageLeft" type="StaticBody3D" parent="."]
+position = Vector3(-0.95, 1.0, -15.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NarrowPassageLeft"]
+mesh = SubResource("WallMesh")
+material_override = SubResource("WallMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NarrowPassageLeft"]
+shape = SubResource("WallCollision")
+
+[node name="NarrowPassageRight" type="StaticBody3D" parent="."]
+position = Vector3(0.95, 1.0, -15.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NarrowPassageRight"]
+mesh = SubResource("WallMesh")
+material_override = SubResource("WallMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NarrowPassageRight"]
+shape = SubResource("WallCollision")
+
+[node name="FinishMarker" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.025, -19.5)
+mesh = SubResource("MarkerMesh")
+material_override = SubResource("FinishMaterial")
