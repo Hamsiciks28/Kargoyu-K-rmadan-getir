@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/player_controller.gd" id="1_controller"]
+
+[sub_resource type="CapsuleShape3D" id="PlayerCollision"]
+radius = 0.35
+height = 1.4
+
+[sub_resource type="StandardMaterial3D" id="BodyMaterial"]
+albedo_color = Color(0.95, 0.4, 0.08, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="PlayerBodyMesh"]
+radius = 0.35
+height = 1.4
+
+[sub_resource type="SphereMesh" id="HeadMesh"]
+radius = 0.23
+height = 0.46
+
+[sub_resource type="SphereShape3D" id="AnchorShape"]
+radius = 0.08
+
+[sub_resource type="CapsuleMesh" id="ForearmMesh"]
+radius = 0.11
+height = 0.85
+
+[sub_resource type="SphereMesh" id="HandMesh"]
+radius = 0.16
+height = 0.32
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_controller")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.7, 0)
+shape = SubResource("PlayerCollision")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.7, 0)
+mesh = SubResource("PlayerBodyMesh")
+material_override = SubResource("BodyMaterial")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.62, 0)
+mesh = SubResource("HeadMesh")
+material_override = SubResource("BodyMaterial")
+
+[node name="ExtendedArm" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.14, -0.43)
+rotation_degrees = Vector3(-90, 0, 0)
+mesh = SubResource("ForearmMesh")
+material_override = SubResource("BodyMaterial")
+
+[node name="Hand" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.23, -0.72)
+mesh = SubResource("HandMesh")
+material_override = SubResource("BodyMaterial")
+
+[node name="CarryAnchor" type="RigidBody3D" parent="."]
+freeze = true
+freeze_mode = 1
+collision_layer = 0
+collision_mask = 0
+position = Vector3(0, 1.23, -1.1)
+sync_to_physics = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CarryAnchor"]
+shape = SubResource("AnchorShape")
+
+[node name="CarryJoint" type="PinJoint3D" parent="."]
+position = Vector3(0, 1.23, -1.1)
+
+
+
