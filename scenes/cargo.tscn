@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="CargoMaterial"]
+albedo_color = Color(0.68, 0.39, 0.17, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="TapeMaterial"]
+albedo_color = Color(0.96, 0.77, 0.31, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="CargoMesh"]
+size = Vector3(0.8, 0.8, 0.8)
+
+[sub_resource type="BoxMesh" id="TapeMeshX"]
+size = Vector3(0.09, 0.82, 0.82)
+
+[sub_resource type="BoxMesh" id="TapeMeshZ"]
+size = Vector3(0.82, 0.82, 0.09)
+
+[sub_resource type="BoxShape3D" id="CargoCollision"]
+size = Vector3(0.8, 0.8, 0.8)
+
+[node name="Cargo" type="RigidBody3D"]
+mass = 1.2
+linear_damp = 4.0
+angular_damp = 6.0
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CargoCollision")
+
+[node name="Box" type="MeshInstance3D" parent="."]
+mesh = SubResource("CargoMesh")
+material_override = SubResource("CargoMaterial")
+
+[node name="TapeAcrossX" type="MeshInstance3D" parent="."]
+mesh = SubResource("TapeMeshX")
+material_override = SubResource("TapeMaterial")
+
+[node name="TapeAcrossZ" type="MeshInstance3D" parent="."]
+mesh = SubResource("TapeMeshZ")
+material_override = SubResource("TapeMaterial")
