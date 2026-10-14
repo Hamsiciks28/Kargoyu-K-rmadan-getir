@@ -1,0 +1,9 @@
+.godot/
+.import/
+.export/
+
+# Exported builds
+*.apk
+*.aab
+*.exe
+*.pck
