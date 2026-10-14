@@ -21,7 +21,11 @@ func _process(_delta: float) -> void:
 	if _run_over:
 		return
 
-	if cargo.global_position.y < -2.0 or absf(cargo.global_position.x) > 8.0 or absf(cargo.global_position.z) > 25.0:
+	if not is_instance_valid(cargo):
+		_show_end_screen(false)
+		return
+
+	if cargo.global_position.y < -1.0 or absf(cargo.global_position.x) > 8.0 or absf(cargo.global_position.z) > 25.0:
 		_show_end_screen(false)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -49,7 +53,7 @@ func _show_end_screen(completed: bool) -> void:
 		retry_button.text = "Tekrar oyna (R)"
 	else:
 		result_title.text = "Koli düştü!"
-		result_message.text = "Daha yavaş dön ve engellere dikkat et."
+		result_message.text = "Koli taşıma noktasından ayrıldı ya da parkurdan düştü. Yeniden dene."
 		retry_button.text = "Yeniden dene (R)"
 	failure_overlay.show()
 	player.set_physics_process(false)

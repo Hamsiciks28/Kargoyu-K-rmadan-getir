@@ -90,7 +90,7 @@ material_override = SubResource("RampMaterial")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RampDown"]
 shape = SubResource("RampCollision")
 
-[node name="CrateObstacle" type="StaticBody3D" parent="."]
+[node name="CrateObstacle" type="StaticBody3D" parent="." groups=["cargo_drop_obstacle"]]
 position = Vector3(-1.45, 0.7, -9.2)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CrateObstacle"]
@@ -100,7 +100,7 @@ material_override = SubResource("CrateMaterial")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CrateObstacle"]
 shape = SubResource("CrateCollision")
 
-[node name="NarrowPassageLeft" type="StaticBody3D" parent="."]
+[node name="NarrowPassageLeft" type="StaticBody3D" parent="." groups=["cargo_drop_obstacle"]]
 position = Vector3(-0.95, 1.0, -15.5)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NarrowPassageLeft"]
@@ -110,7 +110,7 @@ material_override = SubResource("WallMaterial")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NarrowPassageLeft"]
 shape = SubResource("WallCollision")
 
-[node name="NarrowPassageRight" type="StaticBody3D" parent="."]
+[node name="NarrowPassageRight" type="StaticBody3D" parent="." groups=["cargo_drop_obstacle"]]
 position = Vector3(0.95, 1.0, -15.5)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NarrowPassageRight"]
