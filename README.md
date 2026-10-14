@@ -1,4 +1,6 @@
-# Kargoyu Kırmadan Getir — Gün 1–6
+# Kargoyu Kırmadan Getir — Godot 4.x prototip
+
+İlk oynanabilir prototip. Gün 7 ilk hafta kontrolü için iki kişilik manuel test listesi `GUN7_MANUEL_TEST.md` dosyasındadır. Etkileşimli kontroller tamamlanana kadar Gün 7 kabulü beklemededir.
 
 Godot 4.x için temel 3D prototip. Compatibility renderer kullanır.
 
