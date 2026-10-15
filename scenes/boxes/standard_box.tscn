@@ -1,0 +1,68 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/cargo.gd" id="1_script"]
+[ext_resource type="Material" path="res://materials/box_cardboard.tres" id="2_cardboard"]
+[ext_resource type="Material" path="res://materials/box_tape.tres" id="3_tape"]
+[ext_resource type="Material" path="res://materials/box_label.tres" id="4_label"]
+
+[sub_resource type="PhysicsMaterial" id="Physics"]
+friction = 0.8
+bounce = 0.0
+rough = true
+
+[sub_resource type="BoxMesh" id="BodyMesh"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[sub_resource type="BoxMesh" id="TapeTopMesh"]
+size = Vector3(0.12, 0.012, 0.604)
+
+[sub_resource type="BoxMesh" id="TapeFrontMesh"]
+size = Vector3(0.12, 0.58, 0.008)
+
+[sub_resource type="BoxMesh" id="LabelPatchMesh"]
+size = Vector3(0.26, 0.18, 0.006)
+
+[sub_resource type="BoxShape3D" id="Collision"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[node name="StandardBox" type="RigidBody3D"]
+mass = 1.5
+linear_damp = 4.0
+angular_damp = 6.0
+physics_material_override = SubResource("Physics")
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 4
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Collision")
+
+[node name="Box" type="MeshInstance3D" parent="."]
+mesh = SubResource("BodyMesh")
+material_override = ExtResource("2_cardboard")
+
+[node name="TapeTop" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.306, 0)
+mesh = SubResource("TapeTopMesh")
+material_override = ExtResource("3_tape")
+
+[node name="TapeFront" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0.304)
+mesh = SubResource("TapeFrontMesh")
+material_override = ExtResource("3_tape")
+
+[node name="LabelPatch" type="MeshInstance3D" parent="."]
+position = Vector3(-0.13, 0.02, 0.31)
+mesh = SubResource("LabelPatchMesh")
+material_override = ExtResource("4_label")
+
+[node name="ShippingLabel" type="Label3D" parent="."]
+position = Vector3(-0.13, 0.02, 0.314)
+rotation_degrees = Vector3(0, 180, 0)
+pixel_size = 0.0008
+billboard = 0
+text = "KARGO\nKBG-014"
+font_size = 36
+outline_size = 5
+modulate = Color(0.15, 0.12, 0.1, 1)

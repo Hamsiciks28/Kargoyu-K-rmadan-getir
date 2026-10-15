@@ -1,0 +1,106 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/boxes/standard_box.tscn" id="1_standard"]
+[ext_resource type="PackedScene" path="res://scenes/boxes/large_box.tscn" id="2_large"]
+[ext_resource type="PackedScene" path="res://scenes/boxes/fragile_box.tscn" id="3_fragile"]
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 1
+background_color = Color(0.39, 0.48, 0.55, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.78, 0.82, 0.88, 1)
+ambient_light_energy = 0.8
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_color = Color(0.25, 0.31, 0.34, 1)
+roughness = 1.0
+
+[sub_resource type="PlaneMesh" id="FloorMesh"]
+size = Vector2(10, 6)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(10, 0.3, 6)
+
+[sub_resource type="BoxMesh" id="StageMesh"]
+size = Vector3(1.15, 0.18, 1.15)
+
+[sub_resource type="StandardMaterial3D" id="StageMaterial"]
+albedo_color = Color(0.42, 0.48, 0.5, 1)
+roughness = 0.9
+
+[sub_resource type="BoxShape3D" id="StageShape"]
+size = Vector3(1.15, 0.18, 1.15)
+
+[node name="BoxTest" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -26, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 3.9, 8.3)
+rotation_degrees = Vector3(-23, 0, 0)
+current = true
+projection = 1
+size = 7.2
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("FloorMesh")
+material_override = SubResource("FloorMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+position = Vector3(0, -0.15, 0)
+shape = SubResource("FloorShape")
+
+[node name="StandardBox" parent="." instance=ExtResource("1_standard")]
+position = Vector3(-2.1, 1.0, 0)
+
+[node name="LargeBox" parent="." instance=ExtResource("2_large")]
+position = Vector3(0, 1.1, 0)
+
+[node name="FragileBox" parent="." instance=ExtResource("3_fragile")]
+position = Vector3(2.1, 1.0, 0)
+
+[node name="StandardDisplayBlock" type="StaticBody3D" parent="."]
+position = Vector3(-2.1, 0.09, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StandardDisplayBlock"]
+mesh = SubResource("StageMesh")
+material_override = SubResource("StageMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StandardDisplayBlock"]
+shape = SubResource("StageShape")
+
+[node name="LargeDisplayBlock" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.09, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LargeDisplayBlock"]
+mesh = SubResource("StageMesh")
+material_override = SubResource("StageMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LargeDisplayBlock"]
+shape = SubResource("StageShape")
+
+[node name="FragileDisplayBlock" type="StaticBody3D" parent="."]
+position = Vector3(2.1, 0.09, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="FragileDisplayBlock"]
+mesh = SubResource("StageMesh")
+material_override = SubResource("StageMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FragileDisplayBlock"]
+shape = SubResource("StageShape")
+
+[node name="GroundShadow" type="Label3D" parent="."]
+position = Vector3(0, 0.22, -1.1)
+rotation_degrees = Vector3(-90, 0, 0)
+pixel_size = 0.001
+text = "STANDART                    BUYUK                      KIRILIR"
+font_size = 42
+horizontal_alignment = 1
+modulate = Color(0.16, 0.18, 0.19, 1)

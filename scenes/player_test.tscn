@@ -1,0 +1,71 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/boxes/standard_box.tscn" id="2_cargo"]
+
+[sub_resource type="Environment" id="TestEnvironment"]
+background_mode = 1
+background_color = Color(0.48, 0.67, 0.82, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.82, 0.86, 0.92, 1)
+ambient_light_energy = 0.8
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_color = Color(0.34, 0.39, 0.43, 1)
+roughness = 1.0
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(14, 0.2, 14)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(14, 0.2, 14)
+
+[sub_resource type="StandardMaterial3D" id="ScaleMaterial"]
+albedo_color = Color(0.28, 0.55, 0.82, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="ScaleMesh"]
+size = Vector3(0.7, 1.0, 0.7)
+
+[sub_resource type="BoxShape3D" id="ScaleShape"]
+size = Vector3(0.7, 1.0, 0.7)
+
+[node name="PlayerTest" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("TestEnvironment")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-42, -32, 0)
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+position = Vector3(0, -0.1, 0)
+mesh = SubResource("FloorMesh")
+material_override = SubResource("FloorMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+position = Vector3(0, -0.1, 0)
+shape = SubResource("FloorShape")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+
+[node name="Cargo" parent="." instance=ExtResource("2_cargo")]
+position = Vector3(0, 1.23, -1.1)
+
+[node name="ScaleReference" type="StaticBody3D" parent="."]
+position = Vector3(-2.5, 0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ScaleReference"]
+mesh = SubResource("ScaleMesh")
+material_override = SubResource("ScaleMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScaleReference"]
+shape = SubResource("ScaleShape")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(3.5, 3.2, -6.5)
+rotation_degrees = Vector3(-16, 28, 0)
+current = true

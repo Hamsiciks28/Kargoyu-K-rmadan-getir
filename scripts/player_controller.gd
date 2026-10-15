@@ -12,12 +12,19 @@ signal cargo_dropped(reason: String)
 @export_range(1.0, 20.0, 0.5) var cargo_impact_drop_speed: float = 4.5
 @export_range(1.0, 20.0, 0.5) var player_impact_drop_speed: float = 4.5
 @export_range(1.0, 4.0, 0.1) var cargo_max_carry_separation: float = 2.0
-@export var cargo_carry_offset := Vector3(0.0, 1.23, -1.1)
+@export_group("Görsel hareket")
+@export_range(1.0, 20.0, 0.5) var visual_turn_speed: float = 12.0
+@export_range(0.1, 1.0, 0.05) var walk_step_angle: float = 0.4
+@export_range(1.0, 16.0, 0.5) var walk_cycle_speed: float = 8.0
 
 @onready var carry_anchor: RigidBody3D = $CarryAnchor
 @onready var carry_joint: PinJoint3D = $CarryJoint
-@onready var extended_arm: MeshInstance3D = $ExtendedArm
-@onready var hand: MeshInstance3D = $Hand
+@onready var carry_point: Marker3D = $CarryPoint
+@onready var visual_root: Node3D = $VisualRoot
+@onready var extended_arm: Node3D = $VisualRoot/ExtendedArm
+@onready var hand: Node3D = $VisualRoot/Hand
+@onready var leg_left_pivot: Node3D = $VisualRoot/LegLeftPivot
+@onready var leg_right_pivot: Node3D = $VisualRoot/LegRightPivot
 
 var _cargo: RigidBody3D
 var _cargo_is_attached := true
@@ -25,11 +32,12 @@ var _cargo_connection_pending := true
 var _previous_target_velocity := Vector3.ZERO
 var _previous_movement_direction := Vector3.ZERO
 var _direction_memory_age := 0.0
+var _walk_phase := 0.0
 
 func _ready() -> void:
-	# Bu iki değer aynı olduğunda koli taşıma noktasıyla mafsalda hizalı kalır.
-	carry_anchor.position = cargo_carry_offset
-	carry_joint.position = cargo_carry_offset
+	# Koli ve fizik mafsalı Inspector'daki Marker3D taşıma noktasını izler.
+	carry_anchor.position = carry_point.position
+	carry_joint.position = carry_point.position
 	call_deferred("_connect_cargo")
 
 func _connect_cargo() -> void:
@@ -65,6 +73,7 @@ func _physics_process(delta: float) -> void:
 
 	if movement_direction.length_squared() > 1.0:
 		movement_direction = movement_direction.normalized()
+	_update_visual_motion(movement_direction, delta)
 
 	var is_sudden_move := Input.is_action_pressed("sudden_move") and not movement_direction.is_zero_approx()
 	var current_move_speed := sudden_move_speed if is_sudden_move else move_speed
@@ -120,6 +129,22 @@ func _physics_process(delta: float) -> void:
 				break
 
 	_check_cargo_carry_integrity()
+
+func _update_visual_motion(movement_direction: Vector3, delta: float) -> void:
+	if not movement_direction.is_zero_approx():
+		# Modelin önü -Z yönüdür; taşıma noktası da modelle birlikte döner.
+		var target_yaw := atan2(-movement_direction.x, -movement_direction.z)
+		var turn_blend := 1.0 - exp(-visual_turn_speed * delta)
+		rotation.y = lerp_angle(rotation.y, target_yaw, turn_blend)
+
+		_walk_phase = fposmod(_walk_phase + walk_cycle_speed * delta, TAU)
+		var step := sin(_walk_phase) * walk_step_angle
+		leg_left_pivot.rotation.x = step
+		leg_right_pivot.rotation.x = -step
+	else:
+		var idle_blend := 1.0 - exp(-10.0 * delta)
+		leg_left_pivot.rotation.x = lerp_angle(leg_left_pivot.rotation.x, 0.0, idle_blend)
+		leg_right_pivot.rotation.x = lerp_angle(leg_right_pivot.rotation.x, 0.0, idle_blend)
 
 func _check_cargo_carry_integrity() -> void:
 	if not _cargo_is_attached:

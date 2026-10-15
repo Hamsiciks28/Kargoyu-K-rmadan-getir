@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/obstacle_course.tscn" id="1_course"]
 [ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_camera_follow"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
-[ext_resource type="PackedScene" path="res://scenes/cargo.tscn" id="4_cargo"]
+[ext_resource type="PackedScene" path="res://scenes/boxes/standard_box.tscn" id="4_cargo"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="5_game_manager"]
 
 [sub_resource type="Environment" id="Environment"]
