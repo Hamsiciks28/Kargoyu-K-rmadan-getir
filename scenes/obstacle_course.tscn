@@ -58,6 +58,15 @@ position = Vector3(0, 0.025, 15.5)
 mesh = SubResource("MarkerMesh")
 material_override = SubResource("StartMaterial")
 
+[node name="StartLabel" type="Label3D" parent="."]
+position = Vector3(0, 2.2, 15.5)
+billboard = 1
+text = "BAŞLANGIÇ"
+font_size = 48
+pixel_size = 0.01
+modulate = Color(0.12, 0.75, 0.28, 1)
+outline_size = 8
+
 [node name="RampUp" type="StaticBody3D" parent="."]
 position = Vector3(0, 0.43, 9)
 rotation_degrees = Vector3(7, 0, 0)
@@ -68,6 +77,15 @@ material_override = SubResource("RampMaterial")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RampUp"]
 shape = SubResource("RampCollision")
+
+[node name="EasySectionLabel" type="Label3D" parent="."]
+position = Vector3(-5.3, 2.0, 14.0)
+billboard = 1
+text = "KOLAY\nRAMPAYI AŞ"
+font_size = 38
+pixel_size = 0.008
+modulate = Color(0.2, 0.88, 0.34, 1)
+outline_size = 8
 
 [node name="UpperPlatform" type="StaticBody3D" parent="."]
 position = Vector3(0, 0.89, 2.5)
@@ -100,6 +118,15 @@ material_override = SubResource("CrateMaterial")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CrateObstacle"]
 shape = SubResource("CrateCollision")
 
+[node name="MediumSectionLabel" type="Label3D" parent="."]
+position = Vector3(-5.3, 2.0, -6.5)
+billboard = 1
+text = "ORTA\nKASANIN YANINDAN"
+font_size = 38
+pixel_size = 0.008
+modulate = Color(0.98, 0.73, 0.16, 1)
+outline_size = 8
+
 [node name="NarrowPassageLeft" type="StaticBody3D" parent="." groups=["cargo_drop_obstacle"]]
 position = Vector3(-0.95, 1.0, -15.5)
 
@@ -120,7 +147,25 @@ material_override = SubResource("WallMaterial")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NarrowPassageRight"]
 shape = SubResource("WallCollision")
 
+[node name="HardSectionLabel" type="Label3D" parent="."]
+position = Vector3(-5.3, 2.0, -11.8)
+billboard = 1
+text = "ZOR\nDAR GEÇİT"
+font_size = 38
+pixel_size = 0.008
+modulate = Color(0.95, 0.27, 0.22, 1)
+outline_size = 8
+
 [node name="FinishMarker" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.025, -19.5)
 mesh = SubResource("MarkerMesh")
 material_override = SubResource("FinishMaterial")
+
+[node name="FinishLabel" type="Label3D" parent="."]
+position = Vector3(0, 2.2, -19.5)
+billboard = 1
+text = "TESLİMAT"
+font_size = 48
+pixel_size = 0.01
+modulate = Color(0.88, 0.16, 0.16, 1)
+outline_size = 8

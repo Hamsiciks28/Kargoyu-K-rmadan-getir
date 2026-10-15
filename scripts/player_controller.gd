@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-signal cargo_dropped
+signal cargo_dropped(reason: String)
 
 @export_range(0.1, 20.0, 0.1) var move_speed: float = 5.0
 @export_range(0.1, 20.0, 0.1) var sudden_move_speed: float = 9.0
@@ -21,6 +21,7 @@ signal cargo_dropped
 
 var _cargo: RigidBody3D
 var _cargo_is_attached := true
+var _cargo_connection_pending := true
 var _previous_target_velocity := Vector3.ZERO
 var _previous_movement_direction := Vector3.ZERO
 var _direction_memory_age := 0.0
@@ -32,10 +33,13 @@ func _ready() -> void:
 	call_deferred("_connect_cargo")
 
 func _connect_cargo() -> void:
+	if not _cargo_connection_pending:
+		return
+	_cargo_connection_pending = false
 	_cargo = get_node_or_null(cargo_path) as RigidBody3D
 	if _cargo == null:
 		push_warning("Taşınacak koli bulunamadı: %s" % cargo_path)
-		_cargo_is_attached = false
+		_drop_cargo("Koli sahneden kayboldu. Yeniden dene.")
 		return
 
 	add_collision_exception_with(_cargo)
@@ -46,6 +50,11 @@ func _connect_cargo() -> void:
 		_cargo.body_entered.connect(_on_cargo_body_entered)
 
 func _physics_process(delta: float) -> void:
+	# Taşıma bağlantısı call_deferred ile kurulurken ilk fizik adımı erken gelebilir.
+	# Bağlantı tamamlanana kadar koli bütünlüğünü denetlemeyip yanlış düşüşü önle.
+	if _cargo_connection_pending:
+		return
+
 	var input_vector := Input.get_vector(
 		"move_left",
 		"move_right",
@@ -75,8 +84,10 @@ func _physics_process(delta: float) -> void:
 		and not previous_move_was_sudden
 		and movement_change >= sudden_movement_limit
 	)
-	if _cargo_is_attached and (is_sudden_turn or sudden_speed_change):
-		_drop_cargo()
+	if _cargo_is_attached and is_sudden_turn:
+		_drop_cargo("Koli dönüşte seni takip edemedi. Yönünü biraz daha yumuşak değiştir.")
+	elif _cargo_is_attached and sudden_speed_change:
+		_drop_cargo("Koli ani hızlanmada savruldu. Önce yavaşla, sonra hızlan.")
 	_previous_target_velocity = target_velocity
 	if not movement_direction.is_zero_approx():
 		_previous_movement_direction = movement_direction
@@ -93,7 +104,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= gravity_strength * delta
 
 	if Input.is_action_just_pressed("drop_cargo"):
-		_drop_cargo()
+		_drop_cargo("Koliyi sen bıraktın. Baştan deneyip dikkatlice taşı.")
 
 	var incoming_velocity := velocity
 	move_and_slide()
@@ -101,7 +112,11 @@ func _physics_process(delta: float) -> void:
 		for collision_index in get_slide_collision_count():
 			var collision := get_slide_collision(collision_index)
 			if collision.get_normal().y < 0.65 and incoming_velocity.dot(collision.get_normal()) <= -player_impact_drop_speed:
-				_drop_cargo()
+				var collider := collision.get_collider()
+				var impact_message := "Oyuncu engelle sert çarpıştı. Engellere daha yavaş yaklaş."
+				if collider is Node and (collider as Node).is_in_group("cargo_drop_obstacle"):
+					impact_message = "Engelle kafa kafaya geldin. Hızını biraz azalt."
+				_drop_cargo(impact_message)
 				break
 
 	_check_cargo_carry_integrity()
@@ -111,15 +126,15 @@ func _check_cargo_carry_integrity() -> void:
 		return
 
 	if not is_instance_valid(_cargo):
-		_drop_cargo()
+		_drop_cargo("Koli sahneden kayboldu. Yeniden dene.")
 		return
 
 	if not is_instance_valid(carry_joint) or carry_joint.is_queued_for_deletion():
-		_drop_cargo()
+		_drop_cargo("Koli taşıma bağlantısı koptu. Yeniden dene.")
 		return
 
 	if _cargo.global_position.distance_to(carry_anchor.global_position) > cargo_max_carry_separation:
-		_drop_cargo()
+		_drop_cargo("Koli elinden fazla uzaklaştı. Hareketlerini yumuşat.")
 
 func _on_cargo_body_entered(body: Node) -> void:
 	if not _cargo_is_attached or body == self or body == carry_anchor:
@@ -141,12 +156,15 @@ func _on_cargo_body_entered(body: Node) -> void:
 	if hit_course_obstacle:
 		impact_speed = maxf(impact_speed, player_approach_speed)
 	if impact_speed >= cargo_impact_drop_speed:
-		_drop_cargo()
+		if hit_course_obstacle:
+			_drop_cargo("Koli engelle sert çarpıştı. Biraz yavaşlayıp boşluktan geç.")
+		else:
+			_drop_cargo("Koli sert bir çarpışmayla elinden çıktı. Daha dikkatli ilerle.")
 
 func _body_position(body: Node) -> Vector3:
 	return (body as Node3D).global_position if body is Node3D else _cargo.global_position
 
-func _drop_cargo() -> void:
+func _drop_cargo(reason: String) -> void:
 	if not _cargo_is_attached:
 		return
 
@@ -159,7 +177,7 @@ func _drop_cargo() -> void:
 		_cargo.linear_velocity = velocity
 		_cargo.apply_central_impulse(Vector3(0.0, -0.5, -1.0))
 		_cargo.sleeping = false
-	cargo_dropped.emit()
+	cargo_dropped.emit(reason)
 
 
 

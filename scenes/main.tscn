@@ -24,6 +24,9 @@ size = Vector2(14, 44)
 [sub_resource type="BoxShape3D" id="GroundCollision"]
 size = Vector3(14, 0.2, 44)
 
+[sub_resource type="BoxShape3D" id="StartZoneShape"]
+size = Vector3(5, 2.5, 2)
+
 [sub_resource type="BoxShape3D" id="FinishZoneShape"]
 size = Vector3(5, 2.5, 2)
 
@@ -46,6 +49,13 @@ material_override = SubResource("GroundMaterial")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 position = Vector3(0, -0.1, 0)
 shape = SubResource("GroundCollision")
+
+[node name="StartZone" type="Area3D" parent="."]
+position = Vector3(0, 1, 15.5)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartZone"]
+shape = SubResource("StartZoneShape")
 
 [node name="FinishZone" type="Area3D" parent="."]
 position = Vector3(0, 1, -19.5)
@@ -98,7 +108,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="HUD/FailureOverlay/CenterContainer"]
-custom_minimum_size = Vector2(420, 220)
+custom_minimum_size = Vector2(500, 260)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HUD/FailureOverlay/CenterContainer/Panel"]
@@ -112,7 +122,9 @@ text = "Koli düştü!"
 horizontal_alignment = 1
 
 [node name="Message" type="Label" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(400, 64)
 layout_mode = 2
+autowrap_mode = 3
 text = "Daha yavaş dön ve engellere dikkat et."
 horizontal_alignment = 1
 
@@ -120,6 +132,24 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 text = "Yeniden dene (R)"
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "Skor: 0"
+
+[node name="TimerLabel" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 64.0
+offset_right = 240.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Süre: 0.0 sn"
 
 
 
