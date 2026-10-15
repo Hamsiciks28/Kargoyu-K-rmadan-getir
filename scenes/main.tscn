@@ -1,22 +1,21 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://ipk4xwqeu8ah"]
 
 [ext_resource type="PackedScene" path="res://scenes/obstacle_course.tscn" id="1_course"]
-[ext_resource type="Script" path="res://scripts/camera_follow.gd" id="2_camera_follow"]
+[ext_resource type="Script" uid="uid://ukv2piwpb3s0" path="res://scripts/camera_follow.gd" id="2_camera_follow"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/boxes/standard_box.tscn" id="4_cargo"]
-[ext_resource type="Script" path="res://scripts/game_manager.gd" id="5_game_manager"]
+[ext_resource type="Script" uid="uid://h5elyoghp0uc" path="res://scripts/game_manager.gd" id="5_game_manager"]
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
 background_color = Color(0.48, 0.67, 0.82, 1)
 ambient_light_source = 2
-ambient_light_sky_contribution = 0.0
 ambient_light_color = Color(0.82, 0.86, 0.92, 1)
+ambient_light_sky_contribution = 0.0
 ambient_light_energy = 0.65
 
 [sub_resource type="StandardMaterial3D" id="GroundMaterial"]
 albedo_color = Color(0.27, 0.36, 0.31, 1)
-roughness = 1.0
 
 [sub_resource type="PlaneMesh" id="GroundMesh"]
 size = Vector2(14, 44)
@@ -30,58 +29,58 @@ size = Vector3(5, 2.5, 2)
 [sub_resource type="BoxShape3D" id="FinishZoneShape"]
 size = Vector3(5, 2.5, 2)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=424167715]
 script = ExtResource("5_game_manager")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1134862470]
 environment = SubResource("Environment")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-50, -30, 0)
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1524066793]
+transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Ground" type="StaticBody3D" parent="."]
+[node name="Ground" type="StaticBody3D" parent="." unique_id=422415802]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-mesh = SubResource("GroundMesh")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=1013584982]
 material_override = SubResource("GroundMaterial")
+mesh = SubResource("GroundMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-position = Vector3(0, -0.1, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=572014110]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("GroundCollision")
 
-[node name="StartZone" type="Area3D" parent="."]
-position = Vector3(0, 1, 15.5)
+[node name="StartZone" type="Area3D" parent="." unique_id=413894471]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 15.5)
 collision_layer = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StartZone"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartZone" unique_id=673638161]
 shape = SubResource("StartZoneShape")
 
-[node name="FinishZone" type="Area3D" parent="."]
-position = Vector3(0, 1, -19.5)
+[node name="FinishZone" type="Area3D" parent="." unique_id=22036421]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -19.5)
 collision_layer = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FinishZone"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FinishZone" unique_id=1861879057]
 shape = SubResource("FinishZoneShape")
 
-[node name="ObstacleCourse" parent="." instance=ExtResource("1_course")]
+[node name="ObstacleCourse" parent="." unique_id=167769423 instance=ExtResource("1_course")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011958718, 0)
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
-position = Vector3(0, 0, 16)
+[node name="Player" parent="." unique_id=1327270202 instance=ExtResource("3_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16)
 
-[node name="Cargo" parent="." instance=ExtResource("4_cargo")]
-position = Vector3(0, 1.23, 14.9)
+[node name="Cargo" parent="." unique_id=867700075 instance=ExtResource("4_cargo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23, 14.9)
 
-[node name="Camera3D" type="Camera3D" parent="."]
-position = Vector3(0, 9, 26)
-rotation_degrees = Vector3(-29, 0, 0)
-current = true
+[node name="Camera3D" type="Camera3D" parent="." unique_id=911333661]
 process_priority = 10
+transform = Transform3D(1, 0, 0, 0, 0.8746197, 0.4848096, 0, -0.4848096, 0.8746197, 0, 9, 26)
+current = true
 script = ExtResource("2_camera_follow")
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1278997856]
 
-[node name="FailureOverlay" type="Control" parent="HUD"]
+[node name="FailureOverlay" type="Control" parent="HUD" unique_id=627971508]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -90,7 +89,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DimBackground" type="ColorRect" parent="HUD/FailureOverlay"]
+[node name="DimBackground" type="ColorRect" parent="HUD/FailureOverlay" unique_id=1359912400]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -99,7 +98,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.05, 0.03, 0.02, 0.72)
 
-[node name="CenterContainer" type="CenterContainer" parent="HUD/FailureOverlay"]
+[node name="CenterContainer" type="CenterContainer" parent="HUD/FailureOverlay" unique_id=1342145997]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -107,33 +106,33 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="HUD/FailureOverlay/CenterContainer"]
+[node name="Panel" type="PanelContainer" parent="HUD/FailureOverlay/CenterContainer" unique_id=1369305898]
 custom_minimum_size = Vector2(500, 260)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD/FailureOverlay/CenterContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/FailureOverlay/CenterContainer/Panel" unique_id=123453897]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Title" type="Label" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer"]
+[node name="Title" type="Label" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer" unique_id=1661098114]
 layout_mode = 2
 theme_override_font_sizes/font_size = 34
 text = "Koli düştü!"
 horizontal_alignment = 1
 
-[node name="Message" type="Label" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer"]
+[node name="Message" type="Label" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer" unique_id=1105282211]
 custom_minimum_size = Vector2(400, 64)
 layout_mode = 2
-autowrap_mode = 3
 text = "Daha yavaş dön ve engellere dikkat et."
 horizontal_alignment = 1
+autowrap_mode = 3
 
-[node name="RetryButton" type="Button" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer"]
+[node name="RetryButton" type="Button" parent="HUD/FailureOverlay/CenterContainer/Panel/VBoxContainer" unique_id=1910621727]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 text = "Yeniden dene (R)"
 
-[node name="ScoreLabel" type="Label" parent="HUD"]
+[node name="ScoreLabel" type="Label" parent="HUD" unique_id=401858073]
 offset_left = 24.0
 offset_top = 20.0
 offset_right = 200.0
@@ -142,7 +141,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 28
 text = "Skor: 0"
 
-[node name="TimerLabel" type="Label" parent="HUD"]
+[node name="TimerLabel" type="Label" parent="HUD" unique_id=303092121]
 offset_left = 24.0
 offset_top = 64.0
 offset_right = 240.0
@@ -150,6 +149,3 @@ offset_bottom = 100.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Süre: 0.0 sn"
-
-
-

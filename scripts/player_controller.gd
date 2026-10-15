@@ -12,6 +12,7 @@ signal cargo_dropped(reason: String)
 @export_range(1.0, 20.0, 0.5) var cargo_impact_drop_speed: float = 4.5
 @export_range(1.0, 20.0, 0.5) var player_impact_drop_speed: float = 4.5
 @export_range(1.0, 4.0, 0.1) var cargo_max_carry_separation: float = 2.0
+@export var starts_with_cargo := true
 @export_group("Görsel hareket")
 @export_range(1.0, 20.0, 0.5) var visual_turn_speed: float = 12.0
 @export_range(0.1, 1.0, 0.05) var walk_step_angle: float = 0.4
@@ -35,10 +36,15 @@ var _direction_memory_age := 0.0
 var _walk_phase := 0.0
 
 func _ready() -> void:
-	# Koli ve fizik mafsalı Inspector'daki Marker3D taşıma noktasını izler.
 	carry_anchor.position = carry_point.position
 	carry_joint.position = carry_point.position
-	call_deferred("_connect_cargo")
+	if starts_with_cargo:
+		call_deferred("_connect_cargo")
+	else:
+		_cargo_connection_pending = false
+		_cargo_is_attached = false
+		extended_arm.hide()
+		hand.hide()
 
 func _connect_cargo() -> void:
 	if not _cargo_connection_pending:
@@ -57,6 +63,49 @@ func _connect_cargo() -> void:
 	if not _cargo.body_entered.is_connected(_on_cargo_body_entered):
 		_cargo.body_entered.connect(_on_cargo_body_entered)
 
+func has_attached_cargo() -> bool:
+	return _cargo_is_attached and is_instance_valid(_cargo)
+
+func attach_cargo(cargo: RigidBody3D) -> bool:
+	if _cargo_is_attached or not is_instance_valid(cargo):
+		return false
+
+	_cargo = cargo
+	_cargo_is_attached = true
+	_cargo_connection_pending = false
+	carry_anchor.position = carry_point.position
+	if not is_instance_valid(carry_joint) or carry_joint.is_queued_for_deletion():
+		carry_joint = PinJoint3D.new()
+		carry_joint.name = "CarryJoint"
+		add_child(carry_joint)
+	carry_joint.position = carry_point.position
+	cargo.global_position = carry_anchor.global_position
+	cargo.linear_velocity = Vector3.ZERO
+	cargo.angular_velocity = Vector3.ZERO
+	cargo.sleeping = false
+	add_collision_exception_with(cargo)
+	add_collision_exception_with(carry_anchor)
+	carry_joint.node_a = carry_anchor.get_path()
+	carry_joint.node_b = cargo.get_path()
+	if not cargo.body_entered.is_connected(_on_cargo_body_entered):
+		cargo.body_entered.connect(_on_cargo_body_entered)
+	extended_arm.show()
+	hand.show()
+	return true
+
+func detach_cargo_for_delivery() -> RigidBody3D:
+	if not has_attached_cargo():
+		return null
+
+	_cargo_is_attached = false
+	if is_instance_valid(carry_joint) and not carry_joint.is_queued_for_deletion():
+		carry_joint.queue_free()
+	extended_arm.hide()
+	hand.hide()
+	var delivered_cargo := _cargo
+	_cargo = null
+	return delivered_cargo
+
 func _physics_process(delta: float) -> void:
 	# Taşıma bağlantısı call_deferred ile kurulurken ilk fizik adımı erken gelebilir.
 	# Bağlantı tamamlanana kadar koli bütünlüğünü denetlemeyip yanlış düşüşü önle.
@@ -70,6 +119,15 @@ func _physics_process(delta: float) -> void:
 		"move_backward"
 	)
 	var movement_direction := Vector3(input_vector.x, 0.0, input_vector.y)
+	var camera := get_viewport().get_camera_3d()
+	if camera != null:
+		var camera_forward := -camera.global_basis.z
+		camera_forward.y = 0.0
+		camera_forward = camera_forward.normalized()
+		var camera_right := camera.global_basis.x
+		camera_right.y = 0.0
+		camera_right = camera_right.normalized()
+		movement_direction = camera_right * input_vector.x + camera_forward * -input_vector.y
 
 	if movement_direction.length_squared() > 1.0:
 		movement_direction = movement_direction.normalized()

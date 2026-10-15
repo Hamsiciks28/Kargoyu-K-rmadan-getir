@@ -10,8 +10,19 @@ Godot editöründe bu klasördeki `project.godot` dosyasını açıp **F5**'e ba
 
 - **W / A / S / D**: ileri / sol / geri / sağ hareket
 - **Shift + W / A / S / D**: düz giderken hızlanma; Shift'i basılı tutmak tek başına koliyi düşürmez
+- **E**: kamyondan koliyi al / sıradaki evde teslim et / düşen koliyi geri al
 - **Q**: koliyi bırak
-- **R** veya ekrandaki düğme: koli düşünce parkuru yeniden başlat
+- **R**: tur sonu ekranından yeniden başlat
+
+## Aktif prototip: Renkli Mahalle
+
+F5 `scenes/levels/first_neighborhood.tscn` sahnesini başlatır. Bu sahne, mevcut teslimat akışını koruyarak `delivery_neighborhood.tscn` sahnesini yeniden kullanır. Oyuncu kamyonun arkasında başlar. E ile tek koliyi alıp HUD'da gösterilen üç adrese sırayla götürür; sonraki koliyi almak için kamyona döner. Her teslimat işaretinde E'ye basarak teslim eder. İlk etapta koniler geniş aralıklı ve yol kolaydır. İkinci etap iki yön değiştiren dar kapı ve iki yönden de çıkılabilen alçak platform içerir. Son etapta 5° rampalar, rampadan sonra iki zikzak kapısı ve alçak güvenlik rayları bulunur. Ana rampaların ve alçak platformun giriş/çıkışları zemin seviyesinde başlar/biter. Teslimat işaretleri, koli ev duvarına girmeden ev kapısına yaklaşılacak şekilde yol tarafına alındı. Kapı açıklıkları 3.0–3.2 metre bırakıldı; üç teslimat bitince süre, teslimat sayısı ve toplam para gösterilir.
+
+Ödül hesabı UI'dan ayrı `scripts/delivery_economy.gd` kaynağındadır. `delivery_game_manager.gd` içindeki **Economy** kaynağından şu değerler ayarlanabilir: teslimat başına 100 temel ödül, 30 saniyelik bacak süresine göre 0–50 hız bonusu, düşürülmeyen koliye 25 hasarsızlık bonusu ve koli düşüşü başına 25 ceza. Hız bonusu her durak arasında ayrı hesaplanır.
+
+## Önceki tek parkurlu deneme
+
+Önceki parkur ve R/Q yeniden başlatma denemesi `scenes/main.tscn` içinde korunuyor; ana oyun olarak F5 ile başlamaz. Eski parkuru ayrıca açıp F6 ile çalıştırabilirsiniz. O parkurda R veya sonuç ekranındaki düğme, koli düştüğünde yeniden başlatır.
 
 Oyuncu hızı, ani hızlanma hızı, taşıma noktası ve kolinin düşme hassasiyeti `scenes/player.tscn` içindeki `Player` düğümünün Inspector alanlarından değiştirilebilir. Kamera oyuncuyu yumuşak biçimde takip eder. Parkur başlangıç çizgisi, düz yol, yana alınmış kasa engeli, rampalar, dar geçit ve bitiş alanından oluşur. Oyuncu önündeki koli fizik bağlantısıyla taşır; Q ile bırakabilir. Shift ile düz giderken hızlanmak koliyi düşürmez; çok keskin ve ani yön değişimi düşürebilir. Koli yeterince sert bir çarpışma yaşarsa düşer; hafif sürtünme veya yavaş temas tek başına düşürmez. Taşıma bağı koparsa veya koli parkur sınırlarını aşarsa da başarısızlık ekranı açılır ve yeniden deneme düğmesi gösterilir. Koli ağırlığı ve yüzey sürtünmesi ayarlandı, sekme kapatıldı; kayma ve fırlama riski azaltıldı. R tuşuyla veya ekrandaki düğmeyle baştan denenebilir. Bitiş alanına koliyi taşırken ulaşıldığında tamamlanma mesajı çıkar ve aynı yöntemle tekrar oynanabilir.
 
